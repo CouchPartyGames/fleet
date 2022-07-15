@@ -1,0 +1,70 @@
+---
+# https://agones.dev/site/docs/reference/fleet/
+# https://agones.dev/site/docs/reference/gameserver/
+
+apiVersion: "agones.dev/v1"
+kind: Fleet
+metadata:
+  name: {{ .Values.fleet.name | default "default-fleet" }}
+  {{- if .Values.fleet.labels }}
+  labels:
+    {{- range $key, $val := .Values.fleet.labels }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
+  {{- end }}
+
+  {{- if .Values.fleet.annotations }}
+  annotations:
+    {{- range $key, $val := .Values.fleet.annotations }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  {{- if .Values.fleet.replicas }}
+  replicas: {{ .Values.fleet.replicas | default "1" }}
+  {{- end }}
+  scheduling: {{ .Values.fleet.scheduling | default "Packed" }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    spec:
+      {{- if .Values.fleet.labels }}
+      metadata:
+        labels:
+          {{- range $key, $val := .Values.fleet.labels }}
+          {{ $key }}: {{ $val | quote }}
+          {{- end }}
+      {{- end }}
+      ports:
+      - name: default
+        containerPort: 7654
+      health:
+        disabled: {{ .Values.gameServer.health.disabled }}
+        initialDelaySeconds: {{ .Values.gameServer.health.initialDelay }}
+        periodSeconds: {{ .Values.gameServer.health.periodSeconds }}
+      sdkServer:
+        logLevel: Info
+        grpcPort: 9357
+        httpPort: 9358
+      template:
+        spec:
+          containers:
+          - name: {{ .Values.gameServer.name | quote }}
+            image: "{{ .Values.gameServer.image }}:{{ .Values.gameServer.tag }}"
+            resources:
+              requests:
+                memory: "64Mi"
+                cpu: "20m"
+              limits:
+                memory: "64Mi"
+                cpu: "20m"
+          {{- if .Values.gameServer.registryCreds }}
+          imagePullSecrets:
+          - name: regcred
+          {{- end }}
+          nodeSelector:
+            #kubernetes.io/os: windows
+            kubernetes.io/os: linux

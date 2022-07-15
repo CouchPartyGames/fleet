@@ -41,10 +41,13 @@ spec:
       ports:
       - name: default
         containerPort: 7654
+      {{- if .Values.gameServer.health.enabled }}
       health:
-        disabled: {{ .Values.gameServer.health.disabled }}
-        initialDelaySeconds: {{ .Values.gameServer.health.initialDelay }}
+        disabled: false
+        initialDelaySeconds: {{ .Values.gameServer.health.initialDelaySeconds }}
         periodSeconds: {{ .Values.gameServer.health.periodSeconds }}
+        failureThreshold: {{ .Values.gameServer.failureThreshold }}
+      {{- end }}
       sdkServer:
         logLevel: Info
         grpcPort: 9357
@@ -54,6 +57,11 @@ spec:
           containers:
           - name: {{ .Values.gameServer.name | quote }}
             image: "{{ .Values.gameServer.image }}:{{ .Values.gameServer.tag }}"
+            #command: [""]
+            #args: [""]
+            #env:
+            #- name: Test
+            #  value: Test
             resources:
               requests:
                 memory: "64Mi"
@@ -65,6 +73,9 @@ spec:
           imagePullSecrets:
           - name: regcred
           {{- end }}
+          {{- if .Values.gameServer.nodeSelector }}
           nodeSelector:
-            #kubernetes.io/os: windows
-            kubernetes.io/os: linux
+            {{- range $key, $val := .Values.gameServer.nodeSelector }}
+            {{ $key }}: {{ $val | quote }}
+            {{- end }}
+          {{- end }}

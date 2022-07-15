@@ -1,8 +1,6 @@
-# Default values for ..
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
 
 image:
   repository: nginx
@@ -57,14 +55,12 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
-nodeSelector: {}
 
 tolerations: []
 
 affinity: {}
 
 
-project: {}
 
 
 fleet:
@@ -86,24 +82,41 @@ fleet:
 
 gameServer:
   name: ""
-
   image: ""
-
   tag: ""
-
   registryCreds: ""
+  #command: ""
+  #args: ""
+  envs: {}
+
+  ports: {}
 
 
   health:
-    disabled: true
-
-    initialDelay: 20
-
+    enabled: true
+    initialDelaySeconds: 20
     periodSeconds: 10
-
     failureThreshold: 3
+
+    #nodeSelector: {}
+    #kubernetes.io/os: windows
+    #kubernetes.io/os: linux
+
+  sdkServer:
+    logLevel: Info
+    #logLevel: Error
+    #logLevel: 
+
+    grpcPortEnabled: false
+    grpcPort: 9357
+    httpPortEnabled: false
+    httpPortPort: 9358
 
 
 autoScaler:
   type: "buffer"
   #type: "webhook"
+  
+  buffer: {}
+
+  webhook: {}

@@ -25,22 +25,32 @@ spec:
   {{- end }}
   scheduling: {{ .Values.fleet.scheduling | default "Packed" }}
   strategy:
-    type: RollingUpdate
+    type: {{ .Values.fleet.strategy.type | default "RollingUpdate" }}
+    {{- if eq .Values.fleet.strategy.type "RollingUpdate" }}
     rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
+      maxSurge: {{ .Values.fleet.strategy.maxSurge }}
+      maxUnavailable: {{ .Values.fleet.strategy.maxUnavailable }}
+    {{- end }}
   template:
+    {{- if .Values.fleet.labels }}
+    metadata:
+      labels:
+        {{- range $key, $val := .Values.fleet.labels }}
+        {{ $key }}: {{ $val | quote }}
+        {{- end }}
+    {{- end }}
     spec:
-      {{- if .Values.fleet.labels }}
-      metadata:
-        labels:
-          {{- range $key, $val := .Values.fleet.labels }}
-          {{ $key }}: {{ $val | quote }}
-          {{- end }}
-      {{- end }}
       ports:
-      - name: default
-        containerPort: 7654
+      {{- range .Values.gameServer.container }}
+      - name: {{ .name | quote }}
+        containerPort: {{ .port.containerPort }}
+        container: {{ .name }}
+        portPolicy: {{ .port.portPolicy }}
+        protocol: {{ .port.protocol }}
+        {{- if eq .port.portPolicy "Static" }}
+        hostPort: {{ .port.hostPort }}
+        {{- end }}
+      {{- end }}
       {{- if .Values.gameServer.health.enabled }}
       health:
         disabled: false
@@ -49,19 +59,24 @@ spec:
         failureThreshold: {{ .Values.gameServer.failureThreshold }}
       {{- end }}
       sdkServer:
-        logLevel: Info
-        grpcPort: 9357
-        httpPort: 9358
+        logLevel: {{ .Values.gameServer.sdkServer.logLevel }}
+        grpcPort: {{ .Values.gameServer.sdkServer.grpcPort }}
+        httpPort: {{ .Values.gameServer.sdkServer.httpPort }}
       template:
         spec:
           containers:
-          - name: {{ .Values.gameServer.name | quote }}
-            image: "{{ .Values.gameServer.image }}:{{ .Values.gameServer.tag }}"
+          {{- range .Values.gameServer.container }}
+          - name: {{ .name | quote }}
+            image: "{{ .image }}:{{ .tag }}"
             #command: [""]
             #args: [""]
-            #env:
-            #- name: Test
-            #  value: Test
+            {{- if .env }}
+            env:
+            {{- range $key, $val := .env }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end }}
+            {{- end }}
             resources:
               requests:
                 memory: "64Mi"
@@ -69,6 +84,7 @@ spec:
               limits:
                 memory: "64Mi"
                 cpu: "20m"
+          {{- end }}
           {{- if .Values.gameServer.registryCreds }}
           imagePullSecrets:
           - name: regcred

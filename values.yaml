@@ -79,17 +79,31 @@ fleet:
 
   #replicas: 1
   #
+  strategy:
+    type: RollingUpdate
+    #type: Recreate
+    maxSurge: 25%
+    maxUnavailable: 25%
 
 gameServer:
-  name: ""
-  image: ""
-  tag: ""
-  registryCreds: ""
-  #command: ""
-  #args: ""
-  envs: {}
-
-  ports: {}
+  container:
+    - name: "default"
+      image: ""
+      tag: ""
+      registryCreds: ""
+      #command: ""
+      args: []
+      envs: {}
+      port:
+        containerPort: 7888
+        hostPort: 6500
+        portPolicy: Dynamic
+        protocol: UDP
+      ports: 
+      - containerPort: 7888
+        hostPort: 6500
+        portPolicy: Dynamic
+        protocol: UDP
 
 
   health:
@@ -98,14 +112,14 @@ gameServer:
     periodSeconds: 10
     failureThreshold: 3
 
-    #nodeSelector: {}
+  nodeSelector: {}
     #kubernetes.io/os: windows
     #kubernetes.io/os: linux
 
   sdkServer:
     logLevel: Info
     #logLevel: Error
-    #logLevel: 
+    #logLevel: Debug
 
     grpcPortEnabled: false
     grpcPort: 9357

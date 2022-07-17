@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   fleet:
   - apiVersion: v2
+    appVersion: 1.0.4
+    created: "2022-07-17T02:33:52.69907674Z"
+    description: Deploy fleet/GameServers in Agones
+    digest: 0abc1ae40378df185d0322affc526adf34f72c7f458c745cfaafbdd86624da90
+    name: fleet
+    type: application
+    urls:
+    - https://github.com/CouchPartyGames/fleet/releases/download/fleet-1.0.4/fleet-1.0.4.tgz
+    version: 1.0.4
+  - apiVersion: v2
     appVersion: 1.0.3
     created: "2022-07-17T00:57:12.987904864Z"
     description: Deploy fleet/GameServers in Agones
@@ -41,4 +51,4 @@ entries:
     urls:
     - https://github.com/CouchPartyGames/fleet/releases/download/fleet-1.0.0/fleet-1.0.0.tgz
     version: 1.0.0
-generated: "2022-07-17T00:57:12.988601573Z"
+generated: "2022-07-17T02:33:52.699094841Z"

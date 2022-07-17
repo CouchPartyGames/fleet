@@ -79,15 +79,15 @@ spec:
             {{- end }}
             resources:
               requests:
-                memory: "64Mi"
-                cpu: "20m"
+                memory: {{ .resources.requests.memory }}
+                cpu: {{ .resources.requests.cpu }}
               limits:
-                memory: "64Mi"
-                cpu: "20m"
+                memory: {{ .resources.limits.memory }}
+                cpu: {{ .resources.limits.cpu }}
           {{- end }}
           {{- if .Values.gameServer.registryCreds }}
           imagePullSecrets:
-          - name: regcred
+          - name: {{ .Values.gameServer.registryCreds }}
           {{- end }}
           {{- if .Values.gameServer.nodeSelector }}
           nodeSelector:

@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  fleet:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2022-07-17T00:15:42.773640071Z"
+    description: A Helm chart for deploying fleet (game servers) in Agones
+    digest: 7961356a72ec8c9df51ec5b51d944326f82c92e525900938d2be2e983bb82134
+    name: fleet
+    type: application
+    urls:
+    - https://github.com/CouchPartyGames/fleet/releases/download/fleet-1.0.0/fleet-1.0.0.tgz
+    version: 1.0.0
+generated: "2022-07-17T00:15:42.773653371Z"

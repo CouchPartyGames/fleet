@@ -22,7 +22,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: autoscaler-webhook
-  namespace: default
   labels:
     app: autoscaler-webhook
 spec:
@@ -41,13 +40,13 @@ spec:
         image: gcr.io/agones-images/autoscaler-webhook:0.4
         imagePullPolicy: Always
         ports:
-        - name: autoscaler
+        - name: http
           containerPort: 8000
         livenessProbe:
           httpGet:
             scheme: HTTP
             path: /health
-            port: 8000
+            port: http
           initialDelaySeconds: 3
           periodSeconds: 5
 {{ end }}

@@ -1,5 +1,7 @@
 # fleet
-Deploy fleet/gameservers in Agones
+Helm Chart to deploy fleet/gameservers in Agones
+
+Agones is a library for hosting, running and scaling [dedicated game servers](https://en.wikipedia.org/wiki/Game_server#Dedicated_server) on [Kubernetes](https://kubernetes.io).
 
 ## Usage
 

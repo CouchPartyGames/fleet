@@ -49,7 +49,7 @@ gameServer:
     - name: "default"
       image: ""
       tag: ""
-      #registryCreds: ""
+      #registrySecret: ""
       #command: ""
       args: []
       envs: {}

@@ -1,6 +1,6 @@
 apiVersion: v2
 name: fleet
-description: A Helm chart for deploying fleet (game servers) in Agones
+description: Deploy fleet/GameServers in Agones
 
 # A chart can be either an 'application' or a 'library' chart.
 #
